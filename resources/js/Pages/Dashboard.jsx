@@ -87,11 +87,14 @@ export default function Dashboard() {
         >
             {/* Header */}
             <header className="flex items-center justify-between px-8 py-4 border-b border-slate-700/50">
-                <div>
-                    <h1 className="text-3xl font-bold tracking-tight text-cyan-400 uppercase">
-                        Vessel Operations
-                    </h1>
-                    <p className="text-slate-400 text-sm mt-0.5">Live Port Dashboard</p>
+                <div className="flex items-center gap-4">
+                    <img src="/images/logo_1574_x_1064.jpg" alt="Logo" className="h-12 w-auto object-contain" />
+                    <div>
+                        <h1 className="text-3xl font-bold tracking-tight text-cyan-400 uppercase">
+                            Vessel Operations
+                        </h1>
+                        <p className="text-slate-400 text-sm mt-0.5">Live Port Dashboard</p>
+                    </div>
                 </div>
 
                 <div className="flex items-center gap-4">
