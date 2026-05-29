@@ -1,0 +1,24 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php --version)",
+      "Bash(composer --version)",
+      "Bash(npm --version)",
+      "PowerShell($src = \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-temp\"; $dst = \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\"; Get-ChildItem $src -Force | ForEach-Object { if \\($_.PSIsContainer\\) { Copy-Item -Path $_.FullName -Destination \"$dst\\\\$\\($_.Name\\)\" -Recurse -Force } else { Copy-Item -Path $_.FullName -Destination \"$dst\\\\$\\($_.Name\\)\" -Force } }; Write-Host \"Done copying\")",
+      "PowerShell($items = Get-ChildItem \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\" -Force; Write-Host \"Count: $\\($items.Count\\)\"; $items | ForEach-Object { Write-Host $_.Name })",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\app\\\\Jobs\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\app\\\\Http\\\\Controllers\\\\Auth\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\app\\\\Http\\\\Controllers\\\\Admin\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\app\\\\Http\\\\Controllers\\\\Api\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\app\\\\Http\\\\Middleware\")",
+      "PowerShell($items = Get-ChildItem \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\resources\" -Recurse -Force; $items | ForEach-Object { Write-Host $_.FullName })",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\resources\\\\js\\\\Pages\\\\Auth\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\resources\\\\js\\\\Pages\\\\Admin\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\resources\\\\js\\\\Components\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\.docker\\\\nginx\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\.docker\\\\php\")",
+      "PowerShell(New-Item -ItemType Directory -Force \"c:\\\\xampp\\\\htdocs\\\\vessel-dashboard-app\\\\.docker\\\\supervisor\")",
+      "Bash(composer show *)"
+    ]
+  }
+}

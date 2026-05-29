@@ -1,0 +1,48 @@
+name: vessel-dashboard-dev
+
+services:
+  app:
+    build:
+      context: .
+      target: development
+    command: >
+      sh -c "composer install --no-interaction --optimize-autoloader
+      && chmod -R 777 storage bootstrap/cache
+      && php-fpm"
+    volumes:
+      - .:/var/www/html
+      - /var/www/html/vendor
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+      - "n4dbsrvvm:192.168.11.211"
+    env_file: .env
+    networks:
+      - vessel
+
+  nginx:
+    image: nginx:1.27-alpine
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html:ro
+      - ./.docker/nginx/default.conf:/etc/nginx/conf.d/default.conf:ro
+    depends_on:
+      - app
+    networks:
+      - vessel
+
+  vite:
+    image: node:22-alpine
+    working_dir: /app
+    command: sh -c "npm install --legacy-peer-deps && npm run dev -- --host"
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    networks:
+      - vessel
+
+networks:
+  vessel:
+    driver: bridge
