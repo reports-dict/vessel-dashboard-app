@@ -144,7 +144,7 @@ SELECT TOP 10
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('IMPRT','TRSHP','THRGH') AND unit.category IN ('IMPRT','TRSHP') AND fcy_visit.transit_state in ('S30_ECIN','S40_YARD')) as total_discharged_count,
+    AND unit.category IN ('IMPRT','TRSHP','THRGH') AND unit.category IN ('IMPRT','TRSHP') AND fcy_visit.transit_state NOT IN ('S10_ADVISED','S20_INBOUND','S99_RETIRED')) as total_discharged_count,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
@@ -152,7 +152,7 @@ SELECT TOP 10
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
     AND unit.category IN ('IMPRT','TRSHP','THRGH') AND unit.freight_kind = 'FCL'
-    AND fcy_visit.transit_state in ('S30_ECIN','S40_YARD') AND eq_type.basic_length = 'BASIC20') as discharged_fcl_20ft,
+    AND fcy_visit.transit_state NOT IN ('S10_ADVISED','S20_INBOUND','S99_RETIRED') AND eq_type.basic_length = 'BASIC20') as discharged_fcl_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
@@ -160,7 +160,7 @@ SELECT TOP 10
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
     AND unit.category IN ('IMPRT','TRSHP') AND unit.freight_kind = 'FCL'
-    AND fcy_visit.transit_state in ('S30_ECIN','S40_YARD') AND eq_type.basic_length = 'BASIC40') as discharged_fcl_40ft,
+    AND fcy_visit.transit_state NOT IN ('S10_ADVISED','S20_INBOUND','S99_RETIRED') AND eq_type.basic_length = 'BASIC40') as discharged_fcl_40ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
@@ -168,7 +168,7 @@ SELECT TOP 10
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
     AND unit.category IN ('IMPRT','TRSHP','THRGH') AND unit.freight_kind = 'MTY' AND unit.category IN ('IMPRT','TRSHP')
-    AND fcy_visit.transit_state in ('S30_ECIN','S40_YARD') AND eq_type.basic_length = 'BASIC20') as discharged_empty_20ft,
+    AND fcy_visit.transit_state NOT IN ('S10_ADVISED','S20_INBOUND','S99_RETIRED') AND eq_type.basic_length = 'BASIC20') as discharged_empty_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
@@ -176,7 +176,7 @@ SELECT TOP 10
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
     AND unit.category IN ('IMPRT','TRSHP','THRGH') AND unit.freight_kind = 'MTY'
-    AND fcy_visit.transit_state in ('S30_ECIN','S40_YARD') AND eq_type.basic_length = 'BASIC40') as discharged_empty_40ft
+    AND fcy_visit.transit_state NOT IN ('S10_ADVISED','S20_INBOUND','S99_RETIRED') AND eq_type.basic_length = 'BASIC40') as discharged_empty_40ft
 FROM [sparcsn4].[dbo].vsl_vessels as vvsl
 INNER JOIN [sparcsn4].[dbo].vsl_vessel_visit_details as vvsl_vd ON vvsl.gkey=vvsl_vd.vessel_gkey
 INNER JOIN [sparcsn4].[dbo].argo_carrier_visit as argo_cv ON vvsl_vd.vvd_gkey=argo_cv.cvcvd_gkey
