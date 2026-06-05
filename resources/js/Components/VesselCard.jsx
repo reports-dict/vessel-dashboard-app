@@ -35,13 +35,13 @@ function PhaseBadge({ phase }) {
 const bal = (planned, done) => Math.max(0, (planned || 0) - (done || 0));
 
 function StatTable({ vessel, isAlone }) {
-    const cell       = 'text-center text-3xl font-extrabold px-2 align-middle';
-    const label      = `text-left ${isAlone ? 'text-2xl' : 'text-sm'} font-bold uppercase tracking-widest px-2 whitespace-nowrap align-middle`;
-    const colHead    = 'text-center text-xl font-bold uppercase tracking-widest px-2 py-0';
-    const groupHead  = 'text-center text-xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
+    const cell       = 'text-center text-4xl font-extrabold px-2 align-middle';
+    const label      = `text-left ${isAlone ? 'text-4xl' : 'text-4xl'} font-bold uppercase tracking-widest px-2 whitespace-nowrap align-middle`;
+    const colHead    = 'text-center text-3xl font-bold uppercase tracking-widest px-2 py-0';
+    const groupHead  = 'text-center text-3xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
     const sectionRow = `${isAlone ? 'text-3xl' : 'text-sm'} font-extrabold uppercase tracking-widest px-2 py-0.5`;
     const totalLabel = isAlone ? 'text-2xl' : 'text-2xl';
-    const totalValue = isAlone ? 'text-3xl' : 'text-3xl';
+    const totalValue = isAlone ? 'text-4xl' : 'text-4xl';
 
     return (
         <div className="h-full">
@@ -93,7 +93,7 @@ function StatTable({ vessel, isAlone }) {
                                     Total Planned: <span className={`text-blue-300 ${totalValue} font-extrabold`}>{vessel.total_planned_discharge}</span>
                                 </span>
                                 <span className={`${totalLabel} font-bold text-green-600 uppercase tracking-widest`}>
-                                    Total Discharged: <span className={`text-green-400 ${totalValue} font-extrabold`}>{vessel.total_discharged_count}</span>
+                                    Total Disch: <span className={`text-green-400 ${totalValue} font-extrabold`}>{vessel.total_discharged_count}</span>
                                 </span>
                                 <span className={`${totalLabel} font-bold text-yellow-600 uppercase tracking-widest`}>
                                     Balance: <span className={`text-yellow-300 ${totalValue} font-extrabold`}>{bal(vessel.total_planned_discharge, vessel.total_discharged_count)}</span>
@@ -190,8 +190,8 @@ export default function VesselCard({ vessel, isAlone }) {
                 </div>
             </div>
 
-            {/* Two progress bars stacked */}
-            <div className="shrink-0 grid grid-cols-1 gap-1 mb-1">
+            {/* Two progress bars side-by-side */}
+            <div className="shrink-0 grid grid-cols-2 gap-2 mb-1">
                 <div>
                     <div className="flex items-center justify-between mb-0.5">
                         <span className={`text-amber-400 font-semibold uppercase ${meta} tracking-widest`}>Discharge</span>
