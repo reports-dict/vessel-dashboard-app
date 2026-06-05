@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 function WaveLoader({ progressPct, fetching }) {
     const waveDuration = fetching ? '1.2s' : '3s';
@@ -13,8 +13,18 @@ function WaveLoader({ progressPct, fetching }) {
                     0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
                     50%       { transform: translateY(-5px) rotate(1.5deg); }
                 }
-                .wave-anim { animation: wave-flow var(--wave-dur, 3s) linear infinite; }
-                .boat-bob  { animation: boat-bob 2s ease-in-out infinite; }
+                @keyframes slide-in-left {
+                    from { transform: translateX(60px); opacity: 0; }
+                    to   { transform: translateX(0);    opacity: 1; }
+                }
+                @keyframes slide-in-right {
+                    from { transform: translateX(-60px); opacity: 0; }
+                    to   { transform: translateX(0);     opacity: 1; }
+                }
+                .wave-anim       { animation: wave-flow var(--wave-dur, 3s) linear infinite; }
+                .boat-bob        { animation: boat-bob 2s ease-in-out infinite; }
+                .slide-in-left   { animation: slide-in-left  350ms ease-out both; }
+                .slide-in-right  { animation: slide-in-right 350ms ease-out both; }
             `}</style>
 
             {/* Wave SVG */}
@@ -133,13 +143,22 @@ function FullscreenButton() {
 import VesselCard from '@/Components/VesselCard';
 
 const REFRESH_INTERVAL = 60;
+const SLIDE_INTERVAL   = 30;
 
 export default function Dashboard() {
-    const [vessels, setVessels] = useState([]);
+    const [vessels, setVessels]     = useState([]);
     const [fetchedAt, setFetchedAt] = useState(null);
     const [countdown, setCountdown] = useState(REFRESH_INTERVAL);
-    const [fetching, setFetching] = useState(false);
-    const [error, setError] = useState(null);
+    const [fetching, setFetching]   = useState(false);
+    const [error, setError]         = useState(null);
+    const [activeIdx, setActiveIdx] = useState(0);
+    const [slideDir, setSlideDir]             = useState('left');
+    const [animating, setAnimating]           = useState(false);
+    const [slideCountdown, setSlideCountdown] = useState(SLIDE_INTERVAL);
+    const activeIdxRef                        = useRef(0);
+    const vesselsRef                          = useRef([]);
+    const slideTimerRef                       = useRef(null);
+    const slideTickRef                        = useRef(null);
 
     const fetchData = useCallback(async () => {
         setFetching(true);
@@ -147,7 +166,14 @@ export default function Dashboard() {
         try {
             const res = await fetch('/api/dashboard-data');
             const json = await res.json();
-            setVessels(json.vessels || []);
+            const list = json.vessels || [];
+            vesselsRef.current = list;
+            setVessels(list);
+            setActiveIdx(prev => {
+                const clamped = Math.min(prev, Math.max(0, list.length - 1));
+                activeIdxRef.current = clamped;
+                return clamped;
+            });
             setFetchedAt(new Date());
         } catch {
             setError('Failed to fetch data. Retrying next cycle.');
@@ -155,6 +181,39 @@ export default function Dashboard() {
             setFetching(false);
         }
     }, []);
+
+    const goTo = useCallback((idx, dir = 'left') => {
+        setSlideDir(dir);
+        setAnimating(true);
+        setTimeout(() => {
+            activeIdxRef.current = idx;
+            setActiveIdx(idx);
+            setAnimating(false);
+        }, 350);
+    }, []);
+
+    const startSlideTimer = useCallback(() => {
+        clearInterval(slideTimerRef.current);
+        clearInterval(slideTickRef.current);
+        setSlideCountdown(SLIDE_INTERVAL);
+        slideTimerRef.current = setInterval(() => {
+            const total = vesselsRef.current.length;
+            if (total <= 1) return;
+            const next = (activeIdxRef.current + 1) % total;
+            goTo(next, 'left');
+        }, SLIDE_INTERVAL * 1000);
+        slideTickRef.current = setInterval(() => {
+            setSlideCountdown(prev => (prev <= 1 ? SLIDE_INTERVAL : prev - 1));
+        }, 1000);
+    }, [goTo]);
+
+    useEffect(() => {
+        startSlideTimer();
+        return () => {
+            clearInterval(slideTimerRef.current);
+            clearInterval(slideTickRef.current);
+        };
+    }, [startSlideTimer]);
 
     useEffect(() => {
         fetchData();
@@ -232,8 +291,8 @@ export default function Dashboard() {
                 </div>
             )}
 
-            {/* Vessel cards */}
-            <main className="flex-1 overflow-hidden px-6 py-3 min-h-0">
+            {/* Vessel cards — full-screen slideshow */}
+            <main className="flex-1 overflow-hidden px-6 py-3 min-h-0 flex flex-col">
                 {vessels.length === 0 ? (
                     <div className="flex flex-col items-center justify-center h-full gap-6">
                         <h2 className="text-5xl font-extrabold text-slate-500 uppercase tracking-widest">
@@ -252,14 +311,54 @@ export default function Dashboard() {
                         )}
                     </div>
                 ) : (
-                    <div
-                        className="grid gap-3 h-full items-stretch"
-                        style={{ gridTemplateColumns: `repeat(${vessels.length}, minmax(0, 1fr))` }}
-                    >
-                        {vessels.map((vessel) => (
-                            <VesselCard key={vessel.ob_ib_id} vessel={vessel} isAlone={vessels.length === 1} />
-                        ))}
-                    </div>
+                    <>
+                        {/* Single full-height vessel card with slide animation */}
+                        <div
+                            key={activeIdx}
+                            className={`flex-1 min-h-0 ${!animating ? (slideDir === 'left' ? 'slide-in-left' : 'slide-in-right') : ''}`}
+                            style={{ opacity: animating ? 0 : undefined }}
+                        >
+                            <VesselCard
+                                vessel={vessels[activeIdx]}
+                                isAlone={true}
+                            />
+                        </div>
+
+                        {/* Dot indicators + countdown — only when multiple vessels */}
+                        {vessels.length > 1 && (
+                            <div className="shrink-0 flex flex-col items-center gap-1.5 pt-2">
+                                {/* Countdown progress bar */}
+                                <div className="flex items-center gap-2 w-48">
+                                    <div className="flex-1 h-1 bg-slate-700 rounded-full overflow-hidden">
+                                        <div
+                                            className="h-full bg-cyan-500 rounded-full transition-all duration-1000 ease-linear"
+                                            style={{ width: `${(slideCountdown / SLIDE_INTERVAL) * 100}%` }}
+                                        />
+                                    </div>
+                                    <span className="text-xs font-mono text-slate-400 w-6 text-right">{slideCountdown}s</span>
+                                </div>
+                                {/* Dots */}
+                                <div className="flex items-center gap-2">
+                                    {vessels.map((v, i) => (
+                                        <button
+                                            key={v.ob_ib_id}
+                                            onClick={() => {
+                                                const dir = i > activeIdx ? 'left' : 'right';
+                                                goTo(i, dir);
+                                                startSlideTimer();
+                                            }}
+                                            className={`rounded-full transition-all duration-300 ${
+                                                i === activeIdx
+                                                    ? 'w-6 h-2.5 bg-cyan-400'
+                                                    : 'w-2.5 h-2.5 bg-slate-600 hover:bg-slate-400'
+                                            }`}
+                                            title={v.vessel_name}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </main>
 

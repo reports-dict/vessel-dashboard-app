@@ -19,8 +19,8 @@ const bal = (planned, done) => Math.max(0, (planned || 0) - (done || 0));
 function StatTable({ vessel, isAlone }) {
     const cell       = 'text-center text-3xl font-extrabold px-2 align-middle';
     const label      = `text-left ${isAlone ? 'text-2xl' : 'text-sm'} font-bold uppercase tracking-widest px-2 whitespace-nowrap align-middle`;
-    const colHead    = 'text-center text-xs font-bold uppercase tracking-widest px-2 py-0';
-    const groupHead  = 'text-center text-xs font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
+    const colHead    = 'text-center text-xl font-bold uppercase tracking-widest px-2 py-0';
+    const groupHead  = 'text-center text-xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
     const sectionRow = `${isAlone ? 'text-3xl' : 'text-sm'} font-extrabold uppercase tracking-widest px-2 py-0.5`;
     const totalLabel = isAlone ? 'text-sm' : 'text-xs';
     const totalValue = isAlone ? 'text-xl' : 'text-base';
@@ -188,12 +188,16 @@ export default function VesselCard({ vessel, isAlone }) {
                 </div>
             </div>
 
-            <div className="flex-1 min-h-0 flex flex-col gap-1 overflow-hidden">
-                <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+            <div className="flex-1 min-h-0 flex gap-3 overflow-hidden">
+                {/* Left — stat table, 50% */}
+                <div className="w-1/2 min-h-0 overflow-hidden flex flex-col">
                     <StatTable vessel={vessel} isAlone={isAlone} />
                 </div>
-                <div className="shrink-0 h-52">
-                    <VesselBarChart vesselId={vessel.vessel_id} vesselName={vessel.vessel_name} isAlone={isAlone} />
+                {/* Right — chart, 50%, 75% height, centered */}
+                <div className="w-1/2 min-h-0 flex items-center justify-center">
+                    <div className="w-full h-3/4">
+                        <VesselBarChart vesselId={vessel.vessel_id} vesselName={vessel.vessel_name} isAlone={isAlone} />
+                    </div>
                 </div>
             </div>
         </div>

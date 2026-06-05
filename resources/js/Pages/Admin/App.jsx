@@ -24,10 +24,27 @@ function authHeaders() {
 
 // ─── Vessel Override Panel ───────────────────────────────────────────────────
 
+const LOADING_SUB_FIELDS = ['load_plan_fcl_20ft', 'load_plan_fcl_40ft', 'load_plan_empty_20ft', 'load_plan_empty_40ft'];
+
 function OverrideForm({ vessel, onSaved, onCancel }) {
     const initial = Object.fromEntries(OVERRIDE_FIELDS.map(f => [f.key, vessel[f.key] ?? '']));
     const [values, setValues] = useState(initial);
     const [saving, setSaving] = useState(false);
+
+    const loadingSubFields = OVERRIDE_FIELDS.filter(f => LOADING_SUB_FIELDS.includes(f.key));
+
+    const autoSum = (vals) =>
+        LOADING_SUB_FIELDS.reduce((sum, k) => sum + (Number(vals[k]) || 0), 0);
+
+    const handleChange = (key, value) => {
+        setValues(prev => {
+            const next = { ...prev, [key]: value };
+            if (LOADING_SUB_FIELDS.includes(key)) {
+                next.total_planned_loading_wi = autoSum(next);
+            }
+            return next;
+        });
+    };
 
     const handleSave = async () => {
         setSaving(true);
@@ -51,42 +68,32 @@ function OverrideForm({ vessel, onSaved, onCancel }) {
         onSaved();
     };
 
-    const dischargeFields = OVERRIDE_FIELDS.filter(f => f.group === 'discharge');
-    const loadingFields   = OVERRIDE_FIELDS.filter(f => f.group === 'loading');
-
     return (
         <div className="bg-slate-800 border border-slate-700 rounded-xl p-6 mt-3">
             <p className="text-slate-400 text-xs mb-4">Leave blank to use the live query value.</p>
-            <p className="text-amber-400 text-xs font-bold uppercase tracking-widest mb-2">Discharging</p>
-            <div className="grid grid-cols-2 gap-3 mb-4">
-                {dischargeFields.map(f => (
-                    <label key={f.key} className="flex flex-col gap-1">
-                        <span className="text-slate-400 text-xs uppercase tracking-wider">{f.label}</span>
-                        <input
-                            type="number" min="0"
-                            value={values[f.key]}
-                            onChange={e => setValues(v => ({ ...v, [f.key]: e.target.value }))}
-                            placeholder="Live data"
-                            className="bg-slate-900 border border-slate-600 rounded-md px-3 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500"
-                        />
-                    </label>
-                ))}
-            </div>
             <p className="text-cyan-400 text-xs font-bold uppercase tracking-widest mb-2">Loading</p>
-            <div className="grid grid-cols-2 gap-3 mb-5">
-                {loadingFields.map(f => (
+            <div className="grid grid-cols-2 gap-3 mb-3">
+                {loadingSubFields.map(f => (
                     <label key={f.key} className="flex flex-col gap-1">
                         <span className="text-slate-400 text-xs uppercase tracking-wider">{f.label}</span>
                         <input
                             type="number" min="0"
                             value={values[f.key]}
-                            onChange={e => setValues(v => ({ ...v, [f.key]: e.target.value }))}
+                            onChange={e => handleChange(f.key, e.target.value)}
                             placeholder="Live data"
                             className="bg-slate-900 border border-slate-600 rounded-md px-3 py-1.5 text-white text-sm focus:outline-none focus:border-cyan-500"
                         />
                     </label>
                 ))}
             </div>
+            <label className="flex flex-col gap-1 mb-5">
+                <span className="text-slate-400 text-xs uppercase tracking-wider">Total Planned Loading</span>
+                <input
+                    type="number" readOnly
+                    value={autoSum(values)}
+                    className="bg-slate-900/60 border border-slate-700 rounded-md px-3 py-1.5 text-cyan-300 text-sm font-bold cursor-not-allowed"
+                />
+            </label>
             <div className="flex gap-3">
                 <button onClick={handleSave} disabled={saving}
                     className="flex-1 bg-cyan-600 hover:bg-cyan-500 disabled:opacity-50 text-white font-bold py-2 rounded-lg text-sm uppercase tracking-widest">
