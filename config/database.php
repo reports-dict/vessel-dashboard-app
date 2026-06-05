@@ -125,6 +125,19 @@ return [
             'trust_server_certificate' => true,
         ],
 
+        'mysql_navis' => [
+            'driver'    => 'mysql',
+            'host'      => env('NAVIS_DB_HOST', '192.168.11.191'),
+            'port'      => env('NAVIS_DB_PORT', '8098'),
+            'database'  => env('NAVIS_DB_DATABASE', 'navis_localdb'),
+            'username'  => env('NAVIS_DB_USERNAME', 'root'),
+            'password'  => env('NAVIS_DB_PASSWORD', ''),
+            'charset'   => 'utf8mb4',
+            'collation' => 'utf8mb4_unicode_ci',
+            'prefix'    => '',
+            'strict'    => false,
+        ],
+
     ],
 
     /*

@@ -42,6 +42,10 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+        'admin' => [
+            'driver' => 'jwt',
+            'provider' => 'admin_users',
+        ],
     ],
 
     /*
@@ -62,6 +66,10 @@ return [
     */
 
     'providers' => [
+        'admin_users' => [
+            'driver' => 'eloquent',
+            'model'  => App\Models\AdminUser::class,
+        ],
         'users' => [
             'driver' => 'ldap',
             'model'  => LdapRecord\Models\ActiveDirectory\User::class,

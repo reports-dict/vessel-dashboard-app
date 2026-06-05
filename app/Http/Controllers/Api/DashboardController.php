@@ -3,14 +3,48 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\VesselPlanOverride;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
+    private array $overrideFields = [
+        'total_planned_discharge',
+        'discharge_plan_fcl_20ft',
+        'discharge_plan_fcl_40ft',
+        'discharge_plan_mty_20ft',
+        'discharge_plan_mty_40ft',
+        'total_planned_loading_wi',
+        'load_plan_fcl_20ft',
+        'load_plan_fcl_40ft',
+        'load_plan_empty_20ft',
+        'load_plan_empty_40ft',
+    ];
+
     public function data(): JsonResponse
     {
         $vessels = DB::connection('sqlsrv_remote')->select($this->query());
+
+        $activeIds = collect($vessels)->pluck('ob_ib_id');
+
+        // Auto-cleanup overrides for vessels no longer active
+        VesselPlanOverride::whereNotIn('ob_ib_id', $activeIds)->delete();
+
+        // Merge overrides into vessel data
+        $overrides = VesselPlanOverride::all()->keyBy('ob_ib_id');
+
+        foreach ($vessels as $vessel) {
+            $vessel->has_override = false;
+            if ($override = $overrides->get($vessel->ob_ib_id)) {
+                foreach ($this->overrideFields as $field) {
+                    if (!is_null($override->$field)) {
+                        $vessel->$field = $override->$field;
+                    }
+                }
+                $vessel->has_override = true;
+            }
+        }
 
         return response()->json([
             'vessels'    => $vessels,

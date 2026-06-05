@@ -21,3 +21,8 @@ Route::middleware('auth')->prefix('admin')->name('admin.')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/logs', [SyncLogController::class, 'index'])->name('logs');
 });
+
+// JWT Admin SPA routes (no server-side auth — JWT handled client-side)
+Route::get('/admin-panel/login', fn () => inertia('Admin/Login'));
+Route::get('/admin-panel/{any?}', fn () => inertia('Admin/App'))
+    ->where('any', '.*');

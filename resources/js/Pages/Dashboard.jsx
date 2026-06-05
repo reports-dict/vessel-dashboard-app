@@ -1,5 +1,99 @@
 import { useCallback, useEffect, useState } from 'react';
 
+function WaveLoader({ progressPct, fetching }) {
+    const waveDuration = fetching ? '1.2s' : '3s';
+    return (
+        <div style={{ position: 'relative', height: 44, overflow: 'hidden', background: '#0a0e17' }}>
+            <style>{`
+                @keyframes wave-flow {
+                    0%   { transform: translateX(0); }
+                    100% { transform: translateX(-400px); }
+                }
+                @keyframes boat-bob {
+                    0%, 100% { transform: translateY(0px) rotate(-1.5deg); }
+                    50%       { transform: translateY(-5px) rotate(1.5deg); }
+                }
+                .wave-anim { animation: wave-flow var(--wave-dur, 3s) linear infinite; }
+                .boat-bob  { animation: boat-bob 2s ease-in-out infinite; }
+            `}</style>
+
+            {/* Wave SVG */}
+            <svg
+                width="100%" height="100%"
+                viewBox="0 0 1440 44"
+                preserveAspectRatio="none"
+                style={{ position: 'absolute', inset: 0 }}
+            >
+                {/* Water body */}
+                <rect x="0" y="28" width="1440" height="16" fill="rgba(6,78,115,0.25)" />
+
+                {/* Seamless animated wave — 1840px wide so the -400px shift loops cleanly */}
+                <g className="wave-anim" style={{ '--wave-dur': waveDuration }}>
+                    {/* Back wave — darker fill */}
+                    <path
+                        d="M0,30 C100,20 200,38 400,30 C600,22 700,38 900,30
+                           C1100,22 1200,38 1400,30 C1600,22 1700,38 1840,30
+                           L1840,44 L0,44 Z"
+                        fill="rgba(6,78,115,0.35)"
+                    />
+                    {/* Front wave — cyan stroke */}
+                    <path
+                        d="M0,33 C120,24 220,42 440,33 C660,24 760,42 980,33
+                           C1200,24 1300,42 1520,33 C1680,24 1760,42 1840,33"
+                        fill="none"
+                        stroke="rgba(34,211,238,0.45)"
+                        strokeWidth="1.5"
+                    />
+                    {/* Highlight ripple */}
+                    <path
+                        d="M0,28 C80,22 160,34 320,28 C480,22 560,34 720,28
+                           C880,22 960,34 1120,28 C1280,22 1360,34 1520,28
+                           C1680,22 1760,34 1840,28"
+                        fill="none"
+                        stroke="rgba(103,232,249,0.2)"
+                        strokeWidth="1"
+                    />
+                </g>
+
+                {/* Thin cyan progress accent at very bottom */}
+                <rect x="0" y="42" width={`${progressPct}%`} height="2" fill="rgba(34,211,238,0.7)" rx="1" />
+            </svg>
+
+            {/* Vessel — sails left→right with progressPct */}
+            <div
+                className="boat-bob"
+                style={{
+                    position: 'absolute',
+                    top: 4,
+                    left: `calc(${progressPct}% - 22px)`,
+                    transition: 'left 1s linear',
+                    pointerEvents: 'none',
+                }}
+            >
+                <svg width="44" height="30" viewBox="0 0 44 30">
+                    {/* Hull */}
+                    <path d="M4,20 L40,20 L35,27 L9,27 Z" fill="#475569" />
+                    {/* Cabin */}
+                    <rect x="12" y="13" width="15" height="8" fill="#334155" rx="1.5" />
+                    {/* Bridge window */}
+                    <rect x="14" y="15" width="4" height="3" fill="rgba(34,211,238,0.5)" rx="0.5" />
+                    {/* Chimney */}
+                    <rect x="24" y="9" width="4" height="5" fill="#1e293b" rx="1" />
+                    {/* Smoke puff */}
+                    <circle cx="26" cy="7" r="2.5" fill="rgba(148,163,184,0.35)" />
+                    <circle cx="29" cy="5" r="1.8" fill="rgba(148,163,184,0.2)" />
+                    {/* Mast */}
+                    <line x1="17" y1="3" x2="17" y2="13" stroke="#64748b" strokeWidth="1.2" />
+                    {/* Flag */}
+                    <path d="M17,3 L24,6 L17,9 Z" fill="rgba(34,211,238,0.7)" />
+                    {/* Waterline shimmer */}
+                    <path d="M6,23 Q16,21 22,23 Q30,25 38,23" fill="none" stroke="rgba(34,211,238,0.3)" strokeWidth="1" />
+                </svg>
+            </div>
+        </div>
+    );
+}
+
 function FullscreenButton() {
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -82,56 +176,54 @@ export default function Dashboard() {
 
     return (
         <div
-            className="min-h-screen w-screen overflow-hidden flex flex-col"
+            className="h-screen w-screen overflow-hidden flex flex-col"
             style={{ backgroundColor: '#0a0e17', color: '#e2e8f0' }}
         >
             {/* Header */}
-            <header className="flex items-center justify-between px-8 py-4 border-b border-slate-700/50">
-                <div className="flex items-center gap-4">
-                    <img src="/images/logo_1574_x_1064.jpg" alt="Logo" className="h-12 w-auto object-contain" />
+            <header className="flex items-center justify-between px-6 py-1.5 border-b border-slate-700/50">
+                <div className="flex items-center gap-3">
+                    <img src="/images/logo_1574_x_1064.jpg" alt="Logo" className="h-8 w-auto object-contain" />
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-cyan-400 uppercase">
+                        <h1 className="text-xl font-bold tracking-tight text-cyan-400 uppercase leading-none">
                             Vessel Operations
                         </h1>
-                        <p className="text-slate-400 text-sm mt-0.5">Live Port Dashboard</p>
+                        <p className="text-slate-400 text-xs">Live Port Dashboard</p>
                     </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     {fetchedAt && (
-                        <p className="text-slate-500 text-sm">
+                        <p className="text-slate-500 text-xs">
                             Updated {fetchedAt.toLocaleTimeString()}
                         </p>
                     )}
                     <FullscreenButton />
 
                     {/* Countdown badge */}
-                    <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg px-4 py-2">
+                    <div className="flex items-center gap-1">
+                    <a href="/admin-panel/login" className="w-1.5 h-1.5 rounded-full bg-slate-700 hover:bg-slate-500 transition-colors shrink-0" />
+                    <div className="flex items-center gap-2 bg-slate-800 border border-slate-700 rounded-lg px-3 py-1.5">
                         {fetching ? (
                             <>
                                 <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse inline-block" />
-                                <span className="text-cyan-400 text-sm font-mono">Fetching…</span>
+                                <span className="text-cyan-400 text-xs font-mono">Fetching…</span>
                             </>
                         ) : (
                             <>
                                 <span className="w-2 h-2 rounded-full bg-slate-500 inline-block" />
-                                <span className="text-slate-300 text-sm font-mono">
+                                <span className="text-slate-300 text-xs font-mono">
                                     Next refresh in{' '}
                                     <span className="text-cyan-400 font-bold">{countdown}s</span>
                                 </span>
                             </>
                         )}
                     </div>
+                    </div>
                 </div>
             </header>
 
-            {/* Countdown progress bar */}
-            <div className="h-0.5 bg-slate-800/80">
-                <div
-                    className="h-full bg-cyan-500/60 transition-all duration-1000 ease-linear"
-                    style={{ width: `${progressPct}%` }}
-                />
-            </div>
+            {/* Wave loader */}
+            <WaveLoader progressPct={progressPct} fetching={fetching} />
 
             {/* Error banner */}
             {error && (
@@ -141,22 +233,38 @@ export default function Dashboard() {
             )}
 
             {/* Vessel cards */}
-            <main className="flex-1 overflow-hidden px-6 py-3 flex flex-col gap-2 min-h-0">
+            <main className="flex-1 overflow-hidden px-6 py-3 min-h-0">
                 {vessels.length === 0 ? (
-                    <div className="flex items-center justify-center flex-1">
-                        <p className="text-slate-500 text-2xl">
-                            {fetching ? 'Loading…' : 'No active vessel visits'}
-                        </p>
+                    <div className="flex flex-col items-center justify-center h-full gap-6">
+                        <h2 className="text-5xl font-extrabold text-slate-500 uppercase tracking-widest">
+                            No Active Vessel Visits
+                        </h2>
+                        <div className="flex items-center gap-3">
+                            <span className="w-4 h-4 rounded-full bg-cyan-500 animate-pulse" />
+                            <p className="text-slate-500 text-2xl tracking-wide">
+                                {fetching ? 'Checking for vessels…' : 'Monitoring for incoming vessels…'}
+                            </p>
+                        </div>
+                        {fetchedAt && (
+                            <p className="text-slate-600 text-lg">
+                                Last checked: {fetchedAt.toLocaleTimeString()}
+                            </p>
+                        )}
                     </div>
                 ) : (
-                    vessels.map((vessel) => (
-                        <VesselCard key={vessel.ob_ib_id} vessel={vessel} />
-                    ))
+                    <div
+                        className="grid gap-3 h-full items-stretch"
+                        style={{ gridTemplateColumns: `repeat(${vessels.length}, minmax(0, 1fr))` }}
+                    >
+                        {vessels.map((vessel) => (
+                            <VesselCard key={vessel.ob_ib_id} vessel={vessel} isAlone={vessels.length === 1} />
+                        ))}
+                    </div>
                 )}
             </main>
 
             {/* Footer */}
-            <footer className="px-8 py-2 border-t border-slate-700/50 flex items-center gap-3 text-xs text-slate-500">
+            <footer className="px-6 py-1 border-t border-slate-700/50 flex items-center gap-3 text-xs text-slate-500">
                 <span>Data source: N4 SPARCS</span>
                 <span>•</span>
                 <span>Auto-refreshes every {REFRESH_INTERVAL}s</span>
