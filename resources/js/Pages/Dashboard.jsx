@@ -234,8 +234,9 @@ export default function Dashboard() {
     const progressPct = ((REFRESH_INTERVAL - countdown) / REFRESH_INTERVAL) * 100;
 
     return (
+        <div className="h-screen w-screen overflow-hidden p-4" style={{ backgroundColor: '#060a12' }}>
         <div
-            className="h-screen w-screen overflow-hidden flex flex-col"
+            className="h-full w-full overflow-hidden flex flex-col rounded-xl border border-slate-700/60"
             style={{ backgroundColor: '#0a0e17', color: '#e2e8f0' }}
         >
             {/* Header */}
@@ -368,6 +369,7 @@ export default function Dashboard() {
                 <span>•</span>
                 <span>Auto-refreshes every {REFRESH_INTERVAL}s</span>
             </footer>
+        </div>
         </div>
     );
 }

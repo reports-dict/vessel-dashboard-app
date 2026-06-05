@@ -1,5 +1,23 @@
+import { useEffect, useState } from 'react';
 import ProgressBar from './ProgressBar';
 import VesselBarChart from './VesselBarChart';
+
+function useElapsed(dateStr) {
+    const calc = () => {
+        if (!dateStr) return null;
+        const ms = Date.now() - new Date(dateStr).getTime();
+        if (ms < 0) return null;
+        return Math.round((ms / (1000 * 60 * 60)) * 2) / 2;
+    };
+    const [elapsed, setElapsed] = useState(calc);
+    useEffect(() => {
+        if (!dateStr) return;
+        setElapsed(calc());
+        const t = setInterval(() => setElapsed(calc()), 30000);
+        return () => clearInterval(t);
+    }, [dateStr]);
+    return elapsed;
+}
 
 function PhaseBadge({ phase }) {
     const cls =
@@ -22,8 +40,8 @@ function StatTable({ vessel, isAlone }) {
     const colHead    = 'text-center text-xl font-bold uppercase tracking-widest px-2 py-0';
     const groupHead  = 'text-center text-xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
     const sectionRow = `${isAlone ? 'text-3xl' : 'text-sm'} font-extrabold uppercase tracking-widest px-2 py-0.5`;
-    const totalLabel = isAlone ? 'text-sm' : 'text-xs';
-    const totalValue = isAlone ? 'text-xl' : 'text-base';
+    const totalLabel = isAlone ? 'text-xl' : 'text-xl';
+    const totalValue = isAlone ? 'text-xl' : 'text-xl';
 
     return (
         <div className="h-full">
@@ -132,13 +150,14 @@ function StatTable({ vessel, isAlone }) {
 
 export default function VesselCard({ vessel, isAlone }) {
     const fmt = (dt) => dt ? new Date(dt).toLocaleString() : null;
-    const meta = isAlone ? 'text-base' : 'text-sm';
+    const meta = isAlone ? 'text-3xl' : 'text-3xl';
+    const elapsed = useElapsed(vessel.actual_time_of_arrival);
 
     return (
         <div className="bg-slate-800/80 border border-slate-700 rounded-xl p-3 h-full flex flex-col">
             {/* Vessel header */}
             <div className="shrink-0 flex flex-wrap items-center gap-2 mb-1">
-                <h2 className={`${isAlone ? 'text-2xl' : 'text-xl'} font-extrabold text-white tracking-wide`}>
+                <h2 className={`${isAlone ? 'text-3xl' : 'text-xl'} font-extrabold text-white tracking-wide`}>
                     {vessel.vessel_name}
                 </h2>
                 <PhaseBadge phase={vessel.phase} />
@@ -152,9 +171,14 @@ export default function VesselCard({ vessel, isAlone }) {
                 </div>
                 <div className="flex items-center gap-3 ml-auto">
                     {fmt(vessel.actual_time_of_arrival) && (
-                        <div className="flex items-center gap-1">
+                        <div className="flex items-center gap-2">
                             <span className={`text-slate-500 ${meta} uppercase tracking-widest`}>ATA</span>
                             <span className={`text-slate-200 ${meta} font-bold`}>{fmt(vessel.actual_time_of_arrival)}</span>
+                            {elapsed !== null && (
+                                <span className={`${meta} font-extrabold text-amber-400 font-mono`}>
+                                    +{elapsed.toFixed(1)}h
+                                </span>
+                            )}
                         </div>
                     )}
                     {fmt(vessel.actual_time_of_departure) && (
