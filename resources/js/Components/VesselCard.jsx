@@ -40,8 +40,8 @@ function StatTable({ vessel, isAlone }) {
     const colHead    = 'text-center text-xl font-bold uppercase tracking-widest px-2 py-0';
     const groupHead  = 'text-center text-xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
     const sectionRow = `${isAlone ? 'text-3xl' : 'text-sm'} font-extrabold uppercase tracking-widest px-2 py-0.5`;
-    const totalLabel = isAlone ? 'text-xl' : 'text-xl';
-    const totalValue = isAlone ? 'text-xl' : 'text-xl';
+    const totalLabel = isAlone ? 'text-4xl' : 'text-4xl';
+    const totalValue = isAlone ? 'text-4xl' : 'text-4xl';
 
     return (
         <div className="h-full">
@@ -190,8 +190,8 @@ export default function VesselCard({ vessel, isAlone }) {
                 </div>
             </div>
 
-            {/* Two progress bars side-by-side */}
-            <div className="shrink-0 grid grid-cols-2 gap-2 mb-1">
+            {/* Two progress bars stacked */}
+            <div className="shrink-0 grid grid-cols-1 gap-1 mb-1">
                 <div>
                     <div className="flex items-center justify-between mb-0.5">
                         <span className={`text-amber-400 font-semibold uppercase ${meta} tracking-widest`}>Discharge</span>
