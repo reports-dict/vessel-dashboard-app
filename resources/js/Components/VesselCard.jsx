@@ -40,8 +40,8 @@ function StatTable({ vessel, isAlone }) {
     const colHead    = 'text-center text-xl font-bold uppercase tracking-widest px-2 py-0';
     const groupHead  = 'text-center text-xl font-extrabold uppercase tracking-widest px-2 py-0 border-b border-slate-600/50';
     const sectionRow = `${isAlone ? 'text-3xl' : 'text-sm'} font-extrabold uppercase tracking-widest px-2 py-0.5`;
-    const totalLabel = isAlone ? 'text-4xl' : 'text-4xl';
-    const totalValue = isAlone ? 'text-4xl' : 'text-4xl';
+    const totalLabel = isAlone ? 'text-2xl' : 'text-2xl';
+    const totalValue = isAlone ? 'text-3xl' : 'text-3xl';
 
     return (
         <div className="h-full">
