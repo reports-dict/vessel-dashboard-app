@@ -35,6 +35,13 @@ class DashboardController extends Controller
         $overrides = VesselPlanOverride::all()->keyBy('ob_ib_id');
 
         foreach ($vessels as $vessel) {
+            // Loading planned figures default to 0; only shown when explicitly overridden
+            $vessel->total_planned_loading_wi = 0;
+            $vessel->load_plan_fcl_20ft       = 0;
+            $vessel->load_plan_fcl_40ft       = 0;
+            $vessel->load_plan_empty_20ft     = 0;
+            $vessel->load_plan_empty_40ft     = 0;
+
             $vessel->has_override = false;
             if ($override = $overrides->get($vessel->ob_ib_id)) {
                 foreach ($this->overrideFields as $field) {
