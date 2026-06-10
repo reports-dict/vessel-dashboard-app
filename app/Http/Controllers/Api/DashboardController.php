@@ -116,39 +116,39 @@ SELECT TOP 10
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     WHERE fcy_visit.actual_ob_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('EXPRT','TRSHP') AND fcy_visit.transit_state in ('S60_LOADED','S70_DEPARTED')) as total_loaded_count,
+    AND unit.category IN ('EXPRT','TRSHP','THRGH') AND fcy_visit.transit_state = 'S60_LOADED') as total_loaded_count,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ob_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('EXPRT','TRSHP') AND unit.freight_kind = 'FCL'
-    AND fcy_visit.transit_state in ('S60_LOADED','S70_DEPARTED') AND eq_type.basic_length = 'BASIC20') as loaded_fcl_20ft,
+    AND unit.category IN ('EXPRT','TRSHP','THRGH') AND unit.freight_kind = 'FCL'
+    AND fcy_visit.transit_state = 'S60_LOADED' AND eq_type.basic_length = 'BASIC20') as loaded_fcl_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ob_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('EXPRT','TRSHP') AND unit.freight_kind = 'FCL'
-    AND fcy_visit.transit_state in ('S60_LOADED','S70_DEPARTED') AND eq_type.basic_length = 'BASIC40') as loaded_fcl_40ft,
+    AND unit.category IN ('EXPRT','TRSHP','THRGH') AND unit.freight_kind = 'FCL'
+    AND fcy_visit.transit_state = 'S60_LOADED' AND eq_type.basic_length = 'BASIC40') as loaded_fcl_40ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ob_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('EXPRT','TRSHP') AND unit.freight_kind = 'MTY'
-    AND fcy_visit.transit_state in ('S60_LOADED','S70_DEPARTED') AND eq_type.basic_length = 'BASIC20') as loaded_empty_20ft,
+    AND unit.category IN ('EXPRT','TRSHP','THRGH') AND unit.freight_kind = 'MTY'
+    AND fcy_visit.transit_state = 'S60_LOADED' AND eq_type.basic_length = 'BASIC20') as loaded_empty_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ob_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.category IN ('EXPRT','TRSHP') AND unit.freight_kind = 'MTY'
-    AND fcy_visit.transit_state in ('S60_LOADED','S70_DEPARTED') AND eq_type.basic_length = 'BASIC40') as loaded_empty_40ft,
+    AND unit.category IN ('EXPRT','TRSHP','THRGH') AND unit.freight_kind = 'MTY'
+    AND fcy_visit.transit_state = 'S60_LOADED' AND eq_type.basic_length = 'BASIC40') as loaded_empty_40ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
