@@ -220,7 +220,7 @@ export default function VesselCard({ vessel, isAlone }) {
                 {/* Right — chart, 50%, 75% height, centered */}
                 <div className="w-1/2 min-h-0 flex items-center justify-center">
                     <div className="w-full h-3/4">
-                        <VesselBarChart vesselId={vessel.vessel_id} vesselName={vessel.vessel_name} isAlone={isAlone} />
+                        <VesselBarChart graphData={vessel.graph} vesselName={vessel.vessel_name} isAlone={isAlone} />
                     </div>
                 </div>
             </div>

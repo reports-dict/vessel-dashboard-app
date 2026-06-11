@@ -53,6 +53,23 @@ class DashboardController extends Controller
             }
         }
 
+        // Fetch graph data for all active vessels in one MySQL query
+        $vesselIds = collect($vessels)->pluck('vessel_id')->filter()->values()->all();
+        $graphRows = collect();
+        if (!empty($vesselIds)) {
+            $graphRows = DB::connection('mysql_navis')
+                ->table('query1')
+                ->whereIn('vessel_id', $vesselIds)
+                ->orderBy('id', 'asc')
+                ->get(['vessel_id', 'time_range', 'total_moves'])
+                ->groupBy('vessel_id');
+        }
+
+        foreach ($vessels as $vessel) {
+            $rows = $graphRows->get($vessel->vessel_id, collect());
+            $vessel->graph = $rows->slice(-12)->values();
+        }
+
         return response()->json([
             'vessels'    => $vessels,
             'fetched_at' => now()->toISOString(),

@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import {
     ComposedChart, Bar, Line, XAxis, YAxis, CartesianGrid,
     LabelList, ResponsiveContainer, ReferenceLine,
@@ -12,16 +11,8 @@ const fmtRange = (range) => {
     return range.replace(/(\d+):\d+/g, (_, h) => parseInt(h, 10));
 };
 
-export default function VesselBarChart({ vesselId, vesselName, isAlone }) {
-    const [data, setData] = useState(null);
-
-    useEffect(() => {
-        if (!vesselId) return;
-        fetch(`/api/vessel-graph/${encodeURIComponent(vesselId)}`)
-            .then(r => r.json())
-            .then(setData)
-            .catch(() => setData([]));
-    }, [vesselId]);
+export default function VesselBarChart({ graphData, vesselName, isAlone }) {
+    const data = graphData ?? null;
 
     if (data === null) {
         return <div className="h-full rounded-lg bg-slate-900/40 border border-slate-700/30" />;
