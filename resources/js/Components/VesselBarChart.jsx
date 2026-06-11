@@ -61,15 +61,6 @@ export default function VesselBarChart({ graphData, vesselName, isAlone }) {
                             label={{ value: 'Moves', angle: -90, position: 'insideLeft', fill: '#94a3b8', fontSize: yLabelSize, dy: 30 }}
                         />
 
-                        {/* Threshold line at 20 moves/hr */}
-                        <ReferenceLine
-                            y={THRESHOLD}
-                            stroke="#fb923c"
-                            strokeDasharray="5 3"
-                            strokeWidth={2}
-                            label={{ value: '— 20 moves/hr', position: 'insideTopRight', fill: '#ffffff', fontSize: refSize, fontWeight: 700 }}
-                        />
-
                         {/* Bars — visually capped at 60, labels show actual value */}
                         <Bar dataKey="capped" fill="#c8a97e" radius={[3, 3, 0, 0]} isAnimationActive={false}>
                             <LabelList
