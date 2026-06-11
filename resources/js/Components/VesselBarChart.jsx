@@ -8,7 +8,8 @@ const THRESHOLD = 20;
 
 const fmtRange = (range) => {
     if (!range) return '';
-    return range.replace(/(\d+):\d+/g, (_, h) => parseInt(h, 10));
+    const match = range.match(/-(\d+):/);
+    return match ? parseInt(match[1], 10) : range;
 };
 
 export default function VesselBarChart({ graphData, vesselName, isAlone }) {
