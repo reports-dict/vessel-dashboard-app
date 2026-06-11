@@ -67,7 +67,7 @@ class DashboardController extends Controller
 
         foreach ($vessels as $vessel) {
             $rows = $graphRows->get($vessel->vessel_id, collect());
-            $vessel->graph = $rows->slice(-12)->values();
+            $vessel->graph = $rows->slice(-24)->values();
         }
 
         return response()->json([
