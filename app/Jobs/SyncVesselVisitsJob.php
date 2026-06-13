@@ -178,35 +178,70 @@ SELECT TOP 10
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
-    WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%' AND unit.category IN ('IMPRT','TRSHP')) as total_planned_discharge,
+    WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
+    AND (
+	unit.category IN ('IMPRT','TRSHP')
+	OR (
+		unit.category = 'THRGH'
+		AND fcy_visit.restow_typ = 'RESTOW' 
+	)
+    )) as total_planned_discharge,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.freight_kind = 'FCL' AND eq_type.basic_length = 'BASIC20' AND unit.category IN ('IMPRT','TRSHP')) as discharge_plan_fcl_20ft,
+    AND unit.freight_kind = 'FCL' AND eq_type.basic_length = 'BASIC20'
+    AND (
+	unit.category IN ('IMPRT','TRSHP')
+	OR (
+		unit.category = 'THRGH'
+		AND fcy_visit.restow_typ = 'RESTOW' 
+	)
+    )) as discharge_plan_fcl_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.freight_kind = 'FCL' AND eq_type.basic_length = 'BASIC40' AND unit.category IN ('IMPRT','TRSHP')) as discharge_plan_fcl_40ft,
+    AND unit.freight_kind = 'FCL' AND eq_type.basic_length = 'BASIC40'
+    AND (
+	unit.category IN ('IMPRT','TRSHP')
+	OR (
+		unit.category = 'THRGH'
+		AND fcy_visit.restow_typ = 'RESTOW' 
+	)
+    )) as discharge_plan_fcl_40ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.freight_kind = 'MTY' AND eq_type.basic_length = 'BASIC20' AND unit.category IN ('IMPRT','TRSHP')) as discharge_plan_mty_20ft,
+    AND unit.freight_kind = 'MTY' AND eq_type.basic_length = 'BASIC20'
+    AND (
+	unit.category IN ('IMPRT','TRSHP')
+	OR (
+		unit.category = 'THRGH'
+		AND fcy_visit.restow_typ = 'RESTOW' 
+	)
+    )) as discharge_plan_mty_20ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equipment] as ref_eq ON unit.eq_gkey = ref_eq.gkey
     INNER JOIN [sparcsn4].[dbo].[ref_equip_type] as eq_type ON ref_eq.eqtyp_gkey = eq_type.gkey
     WHERE fcy_visit.actual_ib_cv = argo_cv.gkey AND unit.id NOT LIKE '%DUMM%' AND unit.id NOT LIKE '%SAMM%'
-    AND unit.freight_kind = 'MTY' AND eq_type.basic_length = 'BASIC40' AND unit.category IN ('IMPRT','TRSHP')) as discharge_plan_mty_40ft,
+    AND unit.freight_kind = 'MTY' AND eq_type.basic_length = 'BASIC40'
+    AND (
+	unit.category IN ('IMPRT','TRSHP')
+	OR (
+		unit.category = 'THRGH'
+		AND fcy_visit.restow_typ = 'RESTOW' 
+	)
+    )) as discharge_plan_mty_40ft,
     (SELECT count(*)
     FROM [sparcsn4].[dbo].[inv_unit] as unit
     INNER JOIN [sparcsn4].[dbo].[inv_unit_fcy_visit] as fcy_visit ON unit.gkey=fcy_visit.unit_gkey
