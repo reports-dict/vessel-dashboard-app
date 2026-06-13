@@ -49,7 +49,7 @@ function OverrideForm({ vessel, onSaved, onCancel }) {
     const handleSave = async () => {
         setSaving(true);
         const body = { ob_ib_id: vessel.ob_ib_id };
-        OVERRIDE_FIELDS.forEach(f => {
+        OVERRIDE_FIELDS.filter(f => f.group === 'loading').forEach(f => {
             body[f.key] = values[f.key] === '' ? null : Number(values[f.key]);
         });
         await fetch('/api/admin/vessel-plan-override', {
